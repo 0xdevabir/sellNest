@@ -1,0 +1,81 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #202927;
+  --color-ink-soft: #3a4441;
+  --color-paper: #fafaf8;
+  --color-surface: #ffffff;
+  --color-muted: #646a65;
+  --color-line: #e7eae6;
+  --color-line-strong: #c9cfc8;
+  --color-accent: #a8bca1;
+  --color-accent-soft: #e9efe6;
+  --color-accent-ink: #4a6545;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fbeeec;
+  --color-warn-soft: #f6f0dc;
+  --color-warn-ink: #6b5310;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --breakpoint-xs: 26rem;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: 2px;
+}
+
+button:not(:disabled),
+[role='button'],
+summary,
+select,
+label[for] {
+  cursor: pointer;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.prose-page h2 {
+  font-size: 1.25rem;
+  font-weight: 650;
+  margin: 2rem 0 0.5rem;
+}
+.prose-page p,
+.prose-page ul {
+  margin: 0.5rem 0;
+  max-width: 68ch;
+}
+.prose-page ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.prose-page a {
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

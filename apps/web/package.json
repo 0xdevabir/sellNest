@@ -1,0 +1,45 @@
+{
+  "name": "@sellnest/web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "dotenv -e ../../.env -- next dev -p 3100",
+    "build": "dotenv -e ../../.env -- next build",
+    "start": "next start -p 3100",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@sellnest/shared": "workspace:*",
+    "@tanstack/react-query": "^5.90.5",
+    "lucide-react": "^0.546.0",
+    "next": "16.4.3",
+    "server-only": "^0.0.1",
+    "radix-ui": "^1.4.3",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-hook-form": "^7.65.0",
+    "socket.io-client": "^4.8.1",
+    "sonner": "^2.0.7",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@sellnest/config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.7.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.0.4",
+    "dotenv-cli": "^10.0.0",
+    "jsdom": "^27.0.0",
+    "tailwindcss": "^4.1.14",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
