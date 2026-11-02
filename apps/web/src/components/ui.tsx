@@ -2,34 +2,14 @@
 
 import { Loader2, X } from 'lucide-react';
 import { Dialog as RadixDialog } from 'radix-ui';
-import Link from 'next/link';
+import { buttonClass, cx, type ButtonSize, type ButtonVariant } from './ui-core';
 import { forwardRef, useId, type ComponentProps, type ReactNode } from 'react';
 
-export function cx(...parts: (string | false | null | undefined)[]) {
-  return parts.filter(Boolean).join(' ');
-}
-
-const VARIANTS = {
-  primary: 'bg-ink text-white hover:bg-ink-soft',
-  accent: 'bg-accent text-ink hover:bg-[#98ae90]',
-  outline: 'border border-line-strong bg-surface text-ink hover:bg-accent-soft',
-  ghost: 'text-ink hover:bg-accent-soft',
-  danger: 'bg-danger text-white hover:bg-[#92201a]',
-};
-const SIZES = { sm: 'h-9 px-3 text-sm', md: 'h-11 px-4', lg: 'h-12 px-5 text-base', icon: 'size-11' };
-
-export function buttonClass(variant: keyof typeof VARIANTS = 'primary', size: keyof typeof SIZES = 'md', extra?: string) {
-  return cx(
-    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-55',
-    VARIANTS[variant],
-    SIZES[size],
-    extra,
-  );
-}
+export { buttonClass, cx };
 
 type ButtonProps = ComponentProps<'button'> & {
-  variant?: keyof typeof VARIANTS;
-  size?: keyof typeof SIZES;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   loading?: boolean;
 };
 
@@ -224,38 +204,6 @@ export function ConfirmDialog({
   );
 }
 
-export function Pagination({
-  page,
-  totalPages,
-  href,
-}: {
-  page: number;
-  totalPages: number;
-  href: (page: number) => string;
-}) {
-  if (totalPages <= 1) return null;
-  return (
-    <nav aria-label="Pages" className="mt-8 flex items-center justify-center gap-3">
-      {page > 1 ? (
-        <Link className={buttonClass('outline', 'sm')} href={href(page - 1)} rel="prev">
-          Previous
-        </Link>
-      ) : (
-        <span className={buttonClass('outline', 'sm', 'pointer-events-none opacity-50')}>Previous</span>
-      )}
-      <span className="tabular text-sm text-muted">
-        Page {page} of {totalPages}
-      </span>
-      {page < totalPages ? (
-        <Link className={buttonClass('outline', 'sm')} href={href(page + 1)} rel="next">
-          Next
-        </Link>
-      ) : (
-        <span className={buttonClass('outline', 'sm', 'pointer-events-none opacity-50')}>Next</span>
-      )}
-    </nav>
-  );
-}
 
 export function Avatar({ name, url, size = 36 }: { name: string; url?: string | null; size?: number }) {
   return url ? (

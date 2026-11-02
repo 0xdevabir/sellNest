@@ -128,10 +128,10 @@ export function Header() {
           </Link>
           {me && (
             <>
-              <Link href="/account/favorites" aria-label="Saved listings" className={cx(iconLink(pathname === '/account/favorites'), 'hidden md:inline-flex')}>
+              <Link href="/account/favorites" aria-label="Saved listings" className={cx(iconLink(pathname === '/account/favorites'), 'max-md:hidden')}>
                 <Heart className="size-5" aria-hidden />
               </Link>
-              <Link href="/inbox" aria-label="Messages" className={cx(iconLink(pathname.startsWith('/inbox')), 'hidden md:inline-flex')}>
+              <Link href="/inbox" aria-label="Messages" className={cx(iconLink(pathname.startsWith('/inbox')), 'max-md:hidden')}>
                 <MessageCircle className="size-5" aria-hidden />
                 <Count n={me.unreadMessages} label="unread messages" />
               </Link>
@@ -141,7 +141,7 @@ export function Header() {
               </Link>
             </>
           )}
-          <Link href="/sell" className={buttonClass('accent', 'sm', 'mx-1 hidden md:inline-flex')}>
+          <Link href="/sell" className={buttonClass('accent', 'sm', 'mx-1 max-md:hidden')}>
             Sell an item
           </Link>
           {me ? (

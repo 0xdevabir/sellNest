@@ -122,7 +122,7 @@ export function ListingTile({ listing, priority }: { listing: ListingCard; prior
       />
       <div className="tabular mt-2 text-lg font-bold leading-tight">{formatBdt(listing.priceBdt)}</div>
       <h3 className="mt-0.5 line-clamp-2 leading-snug">
-        <Link href={listing.path} className="after:absolute after:inset-0 group-hover:underline">
+        <Link href={listing.path} prefetch={false} className="after:absolute after:inset-0 group-hover:underline">
           {listing.title}
         </Link>
       </h3>

@@ -284,7 +284,7 @@ function ModerationActions({ listing }: { listing: AdminListing }) {
   });
   return (
     <div className="mt-2 flex gap-2">
-      <Button size="sm" onClick={() => setApproveOpen(true)}>Approve</Button>
+      {listing.status === 'PENDING_REVIEW' && <Button size="sm" onClick={() => setApproveOpen(true)}>Approve</Button>}
       <Button size="sm" variant="outline" onClick={() => setRejectOpen(true)}>Reject</Button>
       <ConfirmDialog
         open={approveOpen}

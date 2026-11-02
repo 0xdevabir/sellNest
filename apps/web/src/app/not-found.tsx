@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { buttonClass } from '@/components/ui';
+import { buttonClass } from '@/components/ui-core';
 
 export default function NotFound() {
   return (

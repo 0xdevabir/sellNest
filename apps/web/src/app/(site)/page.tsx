@@ -2,7 +2,8 @@ import type { ListingCard, Paginated } from '@sellnest/shared';
 import Link from 'next/link';
 import { Hero, RadiusExpander, RecentlyViewed } from '@/components/home';
 import { ListingGrid } from '@/components/listing-tile';
-import { buttonClass, EmptyState } from '@/components/ui';
+import { EmptyState } from '@/components/ui';
+import { buttonClass } from '@/components/ui-core';
 import { toQuery } from '@/lib/api';
 import { getCatalog, getPlace, serverApi } from '@/lib/server';
 

@@ -16,7 +16,8 @@ import { RealtimeService, sessionRoom, userRoom } from './realtime.service';
  */
 @WebSocketGateway({
   path: '/socket.io',
-  cors: { origin: () => allowedOrigins(), credentials: true },
+  // The cors package calls this with a callback, and the request hangs until it is called.
+  cors: { origin: (origin: string | undefined, callback: (err: Error | null, allow: boolean) => void) => callback(null, Boolean(origin && allowedOrigins().includes(origin))), credentials: true },
   maxHttpBufferSize: 1024,
   allowRequest: (req: { headers: { origin?: string } }, callback: (err: string | null, ok: boolean) => void) => {
     const origin = req.headers.origin;

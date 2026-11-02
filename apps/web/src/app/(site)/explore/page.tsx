@@ -4,7 +4,8 @@ import { Suspense } from 'react';
 import { DesktopFilters, MobileFilters, ResetFilters, SortSelect } from '@/components/explore-filters';
 import { ListingGrid } from '@/components/listing-tile';
 import { SearchBox } from '@/components/search-box';
-import { EmptyState, Pagination } from '@/components/ui';
+import { EmptyState } from '@/components/ui';
+import { Pagination } from '@/components/ui-core';
 import { ApiError, toQuery } from '@/lib/api';
 import { getCatalog, getPlace, serverApi } from '@/lib/server';
 

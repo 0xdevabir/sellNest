@@ -12,7 +12,7 @@
     "build": "pnpm build:shared && pnpm --filter @sellnest/api build && pnpm --filter @sellnest/web build",
     "typecheck": "pnpm build:shared && pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "test": "pnpm build:shared && pnpm -r test",
+    "test": "pnpm build:shared && pnpm -r --filter '!@sellnest/e2e' test",
     "test:e2e": "pnpm --filter @sellnest/e2e test",
     "db:migrate": "pnpm --filter @sellnest/api db:migrate",
     "db:seed": "pnpm --filter @sellnest/api db:seed",

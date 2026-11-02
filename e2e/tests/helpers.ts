@@ -47,7 +47,7 @@ export async function createVerifiedUser(browser: Browser, name: string) {
 
   await signIn(page, email);
   await page.waitForURL(/\/welcome/);
-  await page.getByLabel('Your usual area').selectOption({ label: 'Daffodil Smart City (DIU)' });
+  await page.getByLabel('Your usual area').selectOption({ label: 'Daffodil Smart City' });
   await page.getByRole('button', { name: 'Save profile' }).click();
   await page.waitForURL((url) => !url.pathname.startsWith('/welcome'));
   return { context, page, email };

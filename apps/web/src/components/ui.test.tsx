@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { Button, ConfirmDialog, Field, Input, Pagination } from './ui';
+import { Button, ConfirmDialog, Field, Input } from './ui';
+import { Pagination } from './ui-core';
 
 describe('Field', () => {
   it('links the label and error to the input', () => {
