@@ -122,6 +122,7 @@ export interface ListingDetail extends ListingCard {
   deliveryAvailable: boolean;
   seller: PublicUserSummary & { memberSince: string; reviewCount: number; averageRating: number | null };
   isOwner: boolean;
+  isDemo: boolean;
   viewerConversationId: string | null;
   viewerOpenOffer: OfferSummary | null;
   rejectionReason: string | null;
