@@ -1,4 +1,4 @@
-import { Logger, OnModuleDestroy } from '@nestjs/common';
+import { Logger, OnApplicationShutdown } from '@nestjs/common';
 import { OnGatewayConnection, OnGatewayInit, WebSocketGateway } from '@nestjs/websockets';
 import { SESSION_COOKIE } from '@sellnest/shared';
 import { createAdapter } from '@socket.io/redis-adapter';
@@ -23,7 +23,7 @@ import { RealtimeService, sessionRoom, userRoom } from './realtime.service';
     callback(null, Boolean(origin && allowedOrigins().includes(origin)));
   },
 })
-export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnModuleDestroy {
+export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnApplicationShutdown {
   private readonly logger = new Logger(RealtimeGateway.name);
   private pub?: ReturnType<RedisService['duplicate']>;
   private sub?: ReturnType<RedisService['duplicate']>;
@@ -57,7 +57,8 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnMo
     }
   }
 
-  onModuleDestroy() {
+  /** Runs after the socket server has closed, because closing it still unsubscribes through these. */
+  onApplicationShutdown() {
     this.pub?.disconnect();
     this.sub?.disconnect();
   }
