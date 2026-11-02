@@ -41,7 +41,7 @@ export class AuthService {
       });
       return;
     }
-    const user = await this.createUserWithUniqueUsername({ ...input, passwordHash });
+    const user = await this.createUserWithUniqueUsername({ email: input.email, displayName: input.displayName, passwordHash });
     if (user) await this.sendVerification(user);
   }
 

@@ -82,12 +82,12 @@ export class SearchService {
       const like = `%${likeEscape(q)}%`;
       where.push(Prisma.sql`(
         l."searchVector" @@ websearch_to_tsquery('english', ${q})
-        OR l."title" % ${q}
+        OR word_similarity(${q}, l."title") >= 0.45
         OR l."title" ILIKE ${like}
         OR l."categoryId" IN (SELECT "id" FROM "Category" WHERE "isActive" AND "name" ILIKE ${like})
         OR l."locationId" IN (SELECT "id" FROM "Location" WHERE "isActive" AND "name" ILIKE ${like})
       )`);
-      rank = Prisma.sql`(ts_rank(l."searchVector", websearch_to_tsquery('english', ${q})) * 2 + similarity(l."title", ${q}))`;
+      rank = Prisma.sql`(ts_rank(l."searchVector", websearch_to_tsquery('english', ${q})) * 2 + word_similarity(${q}, l."title"))`;
     }
 
     const whereSql = Prisma.join(where, ' AND ');
@@ -150,10 +150,10 @@ export class SearchService {
     const [titles, categories] = await Promise.all([
       this.prisma.$queryRaw<{ title: string }[]>(Prisma.sql`
         SELECT "title" FROM (
-          SELECT DISTINCT ON (lower("title")) "title", similarity("title", ${q}) AS score
+          SELECT DISTINCT ON (lower("title")) "title", word_similarity(${q}, "title") AS score
           FROM "Listing"
           WHERE "status" = 'ACTIVE' AND "deletedAt" IS NULL
-            AND ("title" % ${q} OR "title" ILIKE ${like})
+            AND (word_similarity(${q}, "title") >= 0.45 OR "title" ILIKE ${like})
           ORDER BY lower("title"), score DESC
         ) t ORDER BY score DESC LIMIT 6`),
       this.prisma.category.findMany({

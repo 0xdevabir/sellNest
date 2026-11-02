@@ -100,10 +100,13 @@ export class ListingsService {
       throw new ConflictException('Sold and archived listings cannot be edited');
     }
     const { imageIds, ...fields } = dto;
-    if (fields.categoryId) await this.assertLeafCategory(fields.categoryId);
+    if (fields.categoryId) await this.assertCategory(fields.categoryId);
 
     await this.prisma.$transaction(async (tx) => {
-      const updated = await tx.listing.update({ where: { id }, data: fields });
+      const updated = await tx.listing.update({
+        where: { id },
+        data: { ...fields, ...(fields.locationId === null ? { latitude: null, longitude: null } : {}) },
+      });
       if (fields.locationId) await this.syncCoordinates(id, fields.locationId, tx);
       if (imageIds) await this.setImages(tx, id, user.id, imageIds);
       // A live listing must stay publishable, and edits get the same policy check as publishing.
@@ -119,7 +122,7 @@ export class ListingsService {
     return this.editable(id, user.id);
   }
 
-  private async assertLeafCategory(categoryId: string) {
+  private async assertCategory(categoryId: string) {
     const category = await this.prisma.category.findFirst({ where: { id: categoryId, isActive: true } });
     if (!category) throw new BadRequestException('Choose a valid category');
   }
@@ -184,7 +187,11 @@ export class ListingsService {
     const settings = await this.settings.get();
     const since = new Date(Date.now() - 86_400_000);
     const recent = await this.prisma.listing.count({
-      where: { sellerId: user.id, publishedAt: { gte: since } },
+      // Submissions awaiting review count too, or new accounts could queue without limit.
+      where: {
+        sellerId: user.id,
+        OR: [{ publishedAt: { gte: since } }, { status: 'PENDING_REVIEW', updatedAt: { gte: since } }],
+      },
     });
     if (recent >= settings.dailyPublishLimit) {
       throw new HttpException(
@@ -219,9 +226,16 @@ export class ListingsService {
     return tx.$queryRaw`SELECT 1 FROM "Listing" WHERE "id" = ${id}::uuid FOR UPDATE`;
   }
 
-  private async expireOpenOffers(tx: Prisma.TransactionClient, listingId: string, actorId: string) {
+  /** Closes every live negotiation, accepted ones included, except the confirmed buyer's accepted offer. */
+  private async expireOpenOffers(tx: Prisma.TransactionClient, listingId: string, actorId: string, keepBuyerId?: string | null) {
     const open = await tx.offer.findMany({
-      where: { listingId, status: { in: OPEN_OFFER_STATUSES } },
+      where: {
+        listingId,
+        OR: [
+          { status: { in: OPEN_OFFER_STATUSES } },
+          { status: 'ACCEPTED', ...(keepBuyerId ? { buyerId: { not: keepBuyerId } } : {}) },
+        ],
+      },
       select: { id: true, buyerId: true },
     });
     if (open.length === 0) return open;
@@ -251,7 +265,7 @@ export class ListingsService {
         where: { id },
         data: { status: 'SOLD', soldAt: new Date(), soldToUserId: soldToUserId ?? null, soldPriceBdt: soldPriceBdt ?? null },
       });
-      const expired = await this.expireOpenOffers(tx, id, user.id);
+      const expired = await this.expireOpenOffers(tx, id, user.id, soldToUserId);
       const title = listing.title ?? 'A listing';
       const recipients = new Set(expired.map((o) => o.buyerId));
       if (soldToUserId) recipients.delete(soldToUserId);
@@ -312,7 +326,18 @@ export class ListingsService {
     });
   }
 
-  async detail(id: string, viewer?: User): Promise<ListingDetail> {
+  /** Distance from the viewer's chosen area, or null when that area is unknown or has no point. */
+  private async distanceFrom(id: string, locationSlug?: string): Promise<number | null> {
+    if (!locationSlug) return null;
+    const rows = await this.prisma.$queryRaw<{ distance_m: number | null }[]>(Prisma.sql`
+      SELECT ST_Distance(l."geo", loc."geo") AS distance_m
+      FROM "Listing" l, "Location" loc
+      WHERE l."id" = ${id}::uuid AND loc."slug" = ${locationSlug}`);
+    const metres = rows[0]?.distance_m;
+    return metres == null ? null : Math.round(metres / 100) / 10;
+  }
+
+  async detail(id: string, viewer?: User, locationSlug?: string): Promise<ListingDetail> {
     const l = await this.prisma.listing.findFirst({
       where: { id, deletedAt: null },
       include: {
@@ -330,7 +355,8 @@ export class ListingsService {
       // Incomplete drafts have nothing to show even to their owner; they use the edit view.
       throw new NotFoundException('Listing not found');
     }
-    const [reviews, favorite, conversation, openOffer] = await Promise.all([
+    const [distanceKm, reviews, favorite, conversation, openOffer] = await Promise.all([
+      this.distanceFrom(id, locationSlug),
       this.prisma.review.aggregate({ where: { revieweeId: l.sellerId }, _count: true, _avg: { rating: true } }),
       viewer ? this.prisma.favorite.findUnique({ where: { userId_listingId: { userId: viewer.id, listingId: id } } }) : null,
       viewer && !isOwner
@@ -344,7 +370,7 @@ export class ListingsService {
         : null,
     ]);
     return {
-      ...this.mapper.card({ ...l, images: l.images.slice(0, 1) }, { isFavorite: Boolean(favorite) }),
+      ...this.mapper.card({ ...l, images: l.images.slice(0, 1) }, { distanceKm, isFavorite: Boolean(favorite) }),
       description: l.description ?? '',
       images: l.images.map((i) => this.mapper.image(i)),
       originalPriceBdt: l.originalPriceBdt,
@@ -361,6 +387,7 @@ export class ListingsService {
         averageRating: reviews._avg.rating,
       },
       isOwner,
+      isDemo: l.isDemo,
       viewerConversationId: conversation?.id ?? null,
       viewerOpenOffer: openOffer
         ? {

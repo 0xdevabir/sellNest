@@ -43,8 +43,8 @@ export class ListingsController {
 
   @Public()
   @Get('listings/:id')
-  detail(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() viewer?: AuthUser) {
-    return this.listings.detail(id, viewer);
+  detail(@Param('id', ParseUUIDPipe) id: string, @Query('location') location: unknown, @CurrentUser() viewer?: AuthUser) {
+    return this.listings.detail(id, viewer, typeof location === 'string' ? location : undefined);
   }
 
   @Get('listings/:id/edit')

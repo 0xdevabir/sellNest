@@ -26,13 +26,14 @@ export class ListingMapper {
   }
 
   /** Allow-list of public user fields: email, role and password hash can never leak through here. */
-  user(user: Pick<User, 'id' | 'username' | 'displayName' | 'avatarKey' | 'emailVerifiedAt'>): PublicUserSummary {
+  user(user: Pick<User, 'id' | 'username' | 'displayName' | 'avatarKey' | 'emailVerifiedAt' | 'isDemo'>): PublicUserSummary {
     return {
       id: user.id,
       username: user.username,
       displayName: user.displayName,
       avatarUrl: user.avatarKey ? this.storage.publicUrl(`${user.avatarKey}/320.webp`) : null,
-      emailVerified: Boolean(user.emailVerifiedAt),
+      // Demo accounts are verified so they can be used, but must never look like verified people.
+      emailVerified: Boolean(user.emailVerifiedAt) && !user.isDemo,
     };
   }
 
