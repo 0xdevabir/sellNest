@@ -16,6 +16,7 @@ export default defineConfig({
   test: {
     include: ['src/**/*.test.ts', 'test/**/*.test.ts'],
     globalSetup: ['test/global-setup.ts'],
+    setupFiles: ['test/env.ts'],
     testTimeout: 30_000,
     hookTimeout: 60_000,
     // Integration files share one test database, so they must not interleave.
