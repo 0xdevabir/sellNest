@@ -1,0 +1,10 @@
+{
+  "identities": [
+    { "name": "anonymous", "actions": ["Read"] },
+    {
+      "name": "dev",
+      "credentials": [{ "accessKey": "sellnest", "secretKey": "sellnest_dev_only" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+# Local development infrastructure only. Production: infrastructure/docker/compose.prod.yml
+# Every port is bound to 127.0.0.1 and offset so it will not collide with other local projects.
+name: sellnest-dev
+
+services:
+  postgres:
+    # Multi-arch build of the official postgis image (the official tag has no arm64 manifest).
+    image: imresamu/postgis:17-3.5
+    environment:
+      POSTGRES_USER: sellnest
+      POSTGRES_PASSWORD: sellnest_dev_only
+      POSTGRES_DB: sellnest
+    ports: ['127.0.0.1:55532:5432']
+    volumes: ['pgdata:/var/lib/postgresql/data']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sellnest -d sellnest']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    command: ['redis-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
+    ports: ['127.0.0.1:56479:6379']
+    volumes: ['redisdata:/data']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # S3-compatible storage for development. Production uses R2/S3 instead of VPS disk.
+  # The API creates the bucket on startup outside production.
+  objectstore:
+    image: chrislusf/seaweedfs:4.50
+    entrypoint: ['/usr/bin/weed']
+    command:
+      - server
+      - -dir=/data
+      - -s3
+      - -s3.port=8333
+      - -s3.config=/etc/seaweedfs/s3.json
+      - -volume.max=20
+      - -master.volumeSizeLimitMB=256
+    ports: ['127.0.0.1:59100:8333']
+    volumes:
+      - objectdata:/data
+      - ./infrastructure/docker/seaweedfs-s3.dev.json:/etc/seaweedfs/s3.json:ro
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports: ['127.0.0.1:51125:1025', '127.0.0.1:58025:8025']
+
+volumes:
+  pgdata:
+  redisdata:
+  objectdata:
