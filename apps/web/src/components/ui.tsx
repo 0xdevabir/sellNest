@@ -16,7 +16,7 @@ const VARIANTS = {
   ghost: 'text-ink hover:bg-accent-soft',
   danger: 'bg-danger text-white hover:bg-[#92201a]',
 };
-const SIZES = { sm: 'h-9 px-3 text-sm', md: 'h-11 px-4', lg: 'h-12 px-5 text-base' };
+const SIZES = { sm: 'h-9 px-3 text-sm', md: 'h-11 px-4', lg: 'h-12 px-5 text-base', icon: 'size-11' };
 
 export function buttonClass(variant: keyof typeof VARIANTS = 'primary', size: keyof typeof SIZES = 'md', extra?: string) {
   return cx(

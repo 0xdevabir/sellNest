@@ -23,7 +23,7 @@ import { toast } from 'sonner';
 import { api, ApiError, errorMessage, toApiError, toQuery } from '@/lib/api';
 import { ListingImage } from './listing-tile';
 import { useCatalog } from './providers';
-import { Button, buttonClass, cx, Field, Input, Notice, Select, Textarea } from './ui';
+import { Button, cx, Field, Input, Notice, Select, Textarea } from './ui';
 
 export function StartListingButton() {
   const router = useRouter();
@@ -470,14 +470,14 @@ export function SellWizard({ listing, emailVerified }: { listing: ListingEditabl
   };
   const show = (key: keyof typeof errors) => (showErrors ? errors[key] : undefined);
   const areas = locations.filter((l) => !['COUNTRY', 'DIVISION', 'DISTRICT'].includes(l.type));
-  const chosenCategory = categories.flatMap((c) => c.children.map((s) => ({ ...s, parentName: c.name }))).find((c) => c.id === draft.categoryId);
+  const chosenCategory = categories.flatMap((c) => [c, ...c.children]).find((c) => c.id === draft.categoryId);
   const chosenArea = locations.find((l) => l.id === draft.locationId);
 
   return (
     <main className="mx-auto max-w-2xl px-4 pt-6">
       <div className="mb-5 flex items-center justify-between gap-3">
-        <Link href="/sell" className="text-muted underline">
-          {isDraft ? 'Your drafts' : 'Back'}
+        <Link href={isDraft ? '/sell' : '/account'} className="text-muted underline">
+          {isDraft ? 'Your drafts' : 'Your listings'}
         </Link>
         <p className="text-sm text-muted" role="status">
           {isDraft
@@ -700,11 +700,6 @@ export function SellWizard({ listing, emailVerified }: { listing: ListingEditabl
           )}
         </div>
       </div>
-      <p className="mt-3">
-        <Link className={buttonClass('ghost', 'sm', '-ml-3 text-muted')} href="/account/drafts">
-          See all drafts
-        </Link>
-      </p>
     </main>
   );
 }
