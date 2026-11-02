@@ -5,7 +5,7 @@ RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends openssl
   && rm -rf /var/lib/apt/lists/* && corepack enable
 WORKDIR /repo
 COPY . .
-RUN pnpm install --frozen-lockfile --filter '@sellnest/api...'
+RUN pnpm install --frozen-lockfile --fetch-retries=6 --fetch-timeout=120000 --filter '@sellnest/api...'
 RUN pnpm --filter @sellnest/shared build \
   && pnpm --filter @sellnest/api exec prisma generate \
   && pnpm --filter @sellnest/api build

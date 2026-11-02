@@ -2,7 +2,7 @@ FROM node:24-bookworm-slim AS build
 RUN corepack enable
 WORKDIR /repo
 COPY . .
-RUN pnpm install --frozen-lockfile --filter '@sellnest/web...'
+RUN pnpm install --frozen-lockfile --fetch-retries=6 --fetch-timeout=120000 --filter '@sellnest/web...'
 # NODE_ENV must be production here: a development value breaks prerendering of the error pages.
 RUN pnpm --filter @sellnest/shared build && NODE_ENV=production pnpm --filter @sellnest/web exec next build
 

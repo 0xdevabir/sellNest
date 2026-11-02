@@ -1,10 +1,13 @@
 {
-  "lastQuery": "<task-notification>\n<task-id>b3e1dohha</task-id>\n<tool-use-id>toolu_01MjKNZTahQiNA4LsQUrkqkU</tool-use-id>\n<output-file>/private/tmp/claude-501/-Users-mdabirhossain-Documents-WebDevelopment-Shared-Startups-sellNest/08998997-d185-4b40-9c62-00ba74664f09/tasks/b3e1dohha.output</output-file>\n<status>failed</status>\n<summary>Background command \"Starts the rebuilt web server\" failed with exit code 143</summary>\n</task-notification>",
+  "lastQuery": "<task-notification>\n<task-id>b2mjqoi8e</task-id>\n<tool-use-id>toolu_01WAm1i1Y5JGfvkVWugRoqUP</tool-use-id>\n<output-file>/private/tmp/claude-501/-Users-mdabirhossain-Documents-WebDevelopment-Shared-Startups-sellNest/08998997-d185-4b40-9c62-00ba74664f09/tasks/b2mjqoi8e.output</output-file>\n<status>completed</status>\n<summary>Background command \"Waits for the API image build to finish\" completed (exit code 0)</summary>\n</task-notification>",
   "perAgentQuery": {},
   "graftReads": 0,
   "sourceReads": 14,
   "savedTokens": 0,
   "injectedPointers": [],
-  "nudges": 0,
-  "host": "claude-code"
+  "nudges": 1,
+  "host": "claude-code",
+  "inputCostMicros": 509112,
+  "inputTokensBilled": 380140,
+  "lastBillingUuid": "a1a72e6c-908a-457a-ba30-d8d771713823"
 }

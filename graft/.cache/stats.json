@@ -1,12 +1,16 @@
 {
-  "nodeCount": 0,
-  "edgeCount": 0,
-  "languages": [],
-  "totalCount": 0,
+  "nodeCount": 800,
+  "edgeCount": 2008,
+  "languages": [
+    "javascript",
+    "tsx",
+    "typescript"
+  ],
+  "totalCount": 800,
   "readyCount": 0,
   "staleCount": 0,
-  "dirty": true,
+  "dirty": false,
   "syncing": false,
-  "syncedAt": null,
+  "syncedAt": "2026-11-02T09:44:54.354Z",
   "lastFile": "ui-core.tsx"
 }
