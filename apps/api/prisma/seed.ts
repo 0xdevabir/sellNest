@@ -1,8 +1,9 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { ListingCondition, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import * as argon2 from 'argon2';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
+import { DEMO_ITEMS } from './seed-data/demo-items';
 import { CATEGORIES, LOCATIONS, PROHIBITED_KEYWORDS } from './seed-data/reference';
 
 const prisma = new PrismaClient();
@@ -74,44 +75,6 @@ async function placeholderImage(title: string, hue: number) {
   </svg>`;
   return { svg: Buffer.from(svg), width, height };
 }
-
-const DEMO_ITEMS: {
-  title: string;
-  category: string;
-  condition: ListingCondition;
-  price: number;
-  original?: number;
-  negotiable?: boolean;
-  location: string;
-  seller: number;
-  brand?: string;
-  description: string;
-}[] = [
-  { title: 'Lenovo IdeaPad 3 laptop, Ryzen 5, 8 GB', category: 'laptops', condition: 'GOOD', price: 38000, original: 58000, negotiable: true, location: 'daffodil-smart-city', seller: 0, brand: 'Lenovo', description: 'Used for two semesters. Battery lasts about four hours. Comes with the original charger. Small scratch on the lid, screen is clean.' },
-  { title: 'HP Pavilion 15, Core i5, 512 GB SSD', category: 'laptops', condition: 'LIKE_NEW', price: 52000, original: 72000, negotiable: true, location: 'khagan', seller: 1, brand: 'HP', description: 'Bought last year and hardly used. Runs Windows 11 smoothly, and the keyboard backlight works. Box and bill available.' },
-  { title: 'Samsung Galaxy A34 5G, 8/128', category: 'phones', condition: 'GOOD', price: 21500, negotiable: true, location: 'ashulia', seller: 2, brand: 'Samsung', description: 'One owner. Always used with a cover and screen protector. Official variant with charger and box.' },
-  { title: 'Xiaomi Redmi Note 12, 6/128', category: 'phones', condition: 'FAIR', price: 11000, location: 'birulia', seller: 0, brand: 'Xiaomi', description: 'Back glass has a hairline crack; everything else works. A good backup phone at a fair price.' },
-  { title: 'Sony WH-CH520 wireless headphones', category: 'audio', condition: 'LIKE_NEW', price: 4200, original: 6200, location: 'daffodil-smart-city', seller: 3, brand: 'Sony', description: 'Used for a month. Long battery life and clean sound. Includes the charging cable.' },
-  { title: 'Logitech mechanical keyboard and mouse set', category: 'accessories', condition: 'GOOD', price: 3500, negotiable: true, location: 'khagan', seller: 1, brand: 'Logitech', description: 'Both work perfectly. Selling because I moved to a laptop-only setup. The USB receiver is included.' },
-  { title: '24 inch Dell monitor, full HD', category: 'accessories', condition: 'GOOD', price: 12500, negotiable: true, location: 'uttara', seller: 4, brand: 'Dell', description: 'No dead pixels. HDMI and VGA inputs. Stand adjusts for height. Pick up from Uttara sector 10.' },
-  { title: 'Introduction to Algorithms, CLRS, 3rd edition', category: 'course-books', condition: 'GOOD', price: 900, location: 'daffodil-smart-city', seller: 2, description: 'Local print. Some highlighting in the first eight chapters. Useful for the algorithms course and for interviews.' },
-  { title: 'Engineering mathematics book set, 3 volumes', category: 'course-books', condition: 'FAIR', price: 750, negotiable: true, location: 'ashulia', seller: 3, description: 'Three volumes with pencil notes in the margins. Covers are worn but all pages are intact.' },
-  { title: 'Humayun Ahmed novel collection, 12 books', category: 'fiction', condition: 'GOOD', price: 1800, location: 'mirpur', seller: 4, description: 'Twelve novels in good condition. Selling them together because I am moving out of my flat.' },
-  { title: 'Study table with drawer, wood finish', category: 'desks-chairs', condition: 'GOOD', price: 4500, original: 7500, negotiable: true, location: 'khagan', seller: 0, description: 'Solid table that fits a hostel room. You will need to arrange a van; I can help carry it downstairs.' },
-  { title: 'Ergonomic mesh office chair', category: 'desks-chairs', condition: 'LIKE_NEW', price: 8500, negotiable: true, location: 'birulia', seller: 1, description: 'Adjustable height and armrests, used for six months. No tears in the mesh, and the wheels roll smoothly.' },
-  { title: 'Single bed with mattress', category: 'beds-storage', condition: 'FAIR', price: 6000, negotiable: true, location: 'ashulia', seller: 2, description: 'Wooden frame and a foam mattress. Some marks on the frame. Must be picked up this month.' },
-  { title: 'Plastic wardrobe, 4 shelves', category: 'beds-storage', condition: 'GOOD', price: 2200, location: 'daffodil-smart-city', seller: 3, description: 'Lightweight and easy to take apart for moving. Zip cover has no tears.' },
-  { title: 'Miyako rice cooker, 1.8 litre', category: 'kitchen', condition: 'GOOD', price: 1500, location: 'khagan', seller: 4, brand: 'Miyako', description: 'Works well and the inner pot has no scratches. Ideal for a shared hostel kitchen.' },
-  { title: 'Walton mini fridge, 50 litre', category: 'appliances', condition: 'GOOD', price: 9500, original: 14000, negotiable: true, location: 'ashulia', seller: 0, brand: 'Walton', description: 'Cools properly and runs quietly. Fits under a desk. Used for one and a half years.' },
-  { title: 'Table fan, 16 inch', category: 'appliances', condition: 'FAIR', price: 1200, location: 'birulia', seller: 1, description: 'All three speeds work. It has a little noise at top speed, but nothing that bothers me at night.' },
-  { title: 'Formal blazer, navy, size 40', category: 'clothing', condition: 'LIKE_NEW', price: 2500, original: 5000, location: 'dhanmondi', seller: 4, description: 'Worn twice for presentations. Dry cleaned and ready to wear.' },
-  { title: 'Bata leather shoes, size 42', category: 'shoes-bags', condition: 'GOOD', price: 1400, location: 'mohammadpur', seller: 2, brand: 'Bata', description: 'Lightly used formal shoes. Soles are in good shape, and they have just been polished.' },
-  { title: 'Laptop backpack, water resistant', category: 'shoes-bags', condition: 'LIKE_NEW', price: 900, location: 'daffodil-smart-city', seller: 3, description: 'Fits a 15.6 inch laptop. All zips work, and there are no stains.' },
-  { title: 'Phoenix mountain bicycle, 26 inch', category: 'bicycles', condition: 'GOOD', price: 11500, negotiable: true, location: 'savar', seller: 0, brand: 'Phoenix', description: 'Recently serviced with new brake pads. Good for getting around campus and the nearby area.' },
-  { title: 'Yonex badminton racket pair', category: 'sports-gear', condition: 'GOOD', price: 1600, location: 'khagan', seller: 1, brand: 'Yonex', description: 'Two rackets with covers. Strings still have good tension.' },
-  { title: 'Acoustic guitar with bag', category: 'instruments', condition: 'GOOD', price: 5500, negotiable: true, location: 'uttara', seller: 4, description: 'Good beginner guitar with a nice tone. Comes with a bag, a capo and spare strings.' },
-  { title: 'Casio scientific calculator fx-991EX', category: 'accessories', condition: 'LIKE_NEW', price: 1700, location: 'daffodil-smart-city', seller: 2, brand: 'Casio', description: 'Used for one semester. Genuine unit, with the cover and manual.' },
-];
 
 async function seedDemo(locationIds: Map<string, string>) {
   if (await prisma.user.findFirst({ where: { isDemo: true }, select: { id: true } })) {

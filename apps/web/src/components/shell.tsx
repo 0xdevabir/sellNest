@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { api } from '@/lib/api';
 import { LocationDialog } from './location-picker';
+import { Logo } from './logo';
 import { useCatalog, useMe } from './providers';
 import { SearchBox } from './search-box';
 import { Avatar, buttonClass, cx } from './ui';
@@ -114,8 +115,8 @@ export function Header() {
         Skip to content
       </a>
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-2 px-4 md:h-16 md:gap-3">
-        <Link href="/" className="shrink-0 text-lg font-bold tracking-tight">
-          SellNest
+        <Link href="/" className="shrink-0" aria-label="SellNest home">
+          <Logo />
         </Link>
         <div className="min-w-0 max-w-48 flex-1 md:flex-none">{placeButton}</div>
         <SearchBox className="hidden flex-1 md:block" initial={undefined} />
@@ -203,7 +204,7 @@ export function Footer() {
     <footer className="mt-16 border-t border-line bg-surface">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="text-lg font-bold tracking-tight">SellNest</div>
+          <Logo />
           <p className="mt-1 max-w-xs text-sm text-muted">
             Buy nearby. Sell easily. Buyers and sellers arrange payment and handover themselves; SellNest does not process payments.
           </p>

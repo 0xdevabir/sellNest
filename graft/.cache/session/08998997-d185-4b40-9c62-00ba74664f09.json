@@ -12,5 +12,6 @@
   "lastBillingUuid": "85d8cf04-f48f-4eff-bb91-10b324024eb4",
   "turnUsedGraft": false,
   "graftTurns": 1,
-  "lastTallyUuid": "e464efd1-0557-4839-8e90-a2c07f4d76bf"
+  "lastTallyUuid": "e464efd1-0557-4839-8e90-a2c07f4d76bf",
+  "summarized": true
 }
